@@ -1,0 +1,11 @@
+[general]
+shuffle_caption = false
+keep_tokens = 1
+
+[[datasets]]
+resolution = [512, 512]
+batch_size = 4
+
+  [[datasets.subsets]]
+  image_dir = './bs_hand/'
+  metadata_file = './bs_hand/meta_cap.json'

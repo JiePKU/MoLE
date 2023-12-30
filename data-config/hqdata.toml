@@ -1,0 +1,14 @@
+[general]
+shuffle_caption = false
+keep_tokens = 1
+
+[[datasets]]
+resolution = [512, 512]
+batch_size = 3
+
+  [[datasets.subsets]]
+  image_dir = './finetune-data_23411/'
+  metadata_file = './finetune-data_23411/meta_cap.json'
+
+
+

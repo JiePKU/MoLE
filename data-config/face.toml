@@ -1,0 +1,11 @@
+[general]
+shuffle_caption = false
+keep_tokens = 1
+
+[[datasets]]
+resolution = [512, 512]
+batch_size = 4
+
+  [[datasets.subsets]]
+  image_dir = './finetune-data/face_new/'
+  metadata_file = './finetune-data/face_new/meta_cap.json'
