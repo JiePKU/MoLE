@@ -14,6 +14,8 @@ Download the Human-centric Dataset (Coming soon).
 
 This dataset involves three subsets:human-in-the-scene images, close-up of face images, and close-up of hand images, totally one million images. Moreover these images possess superior quality and boasts high aesthetic scores.
 
+#### We also provide the scripts of downloading raw images from corresponding websites. See directory ./climb_scripts
+
 ## Training
 MoLE contains three stages.
 
