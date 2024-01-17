@@ -6,6 +6,10 @@ import collections
 """
 We reference the paper (https://arxiv.org/pdf/2308.00951.pdf) and pseudocode to implement soft moe
 """
+"""
+Thanks to dataset provider:Copyright(c) 2018, seeprettyface.com, BUPT\_GWY contributes the dataset.
+"""
+
 # def soft_moe_layer(X, Phi, experts):
 # # Compute the dispatch and combine weights .
 #     logits = torch.einsum ("md,dnp->mnp", X, Phi)
