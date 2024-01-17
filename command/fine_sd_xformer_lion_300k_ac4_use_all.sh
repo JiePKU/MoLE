@@ -10,7 +10,7 @@ export MODEL_NAME="./stable-diffusion-v1-5"
 export DATASET_NAME="./data-config/hqdata.toml"
 export OUTPUT_DIR="./sd_output/$my_name"
 
-PYTHON=/root/paddlejob/workspace/env_run/diffusion/bin/python
+PYTHON=/env_run/diffusion/bin/python
 
 OMP_NUM_THREADS=1 $PYTHON -m torch.distributed.launch --nproc_per_node 4 \
     --use_env fine_tune.py \

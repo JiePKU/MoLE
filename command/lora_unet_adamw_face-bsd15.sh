@@ -12,13 +12,13 @@ export DATASET_NAME="./data-config/face.toml"
 export OUTPUT_DIR="./sd_output/$my_name"
 
 export CUDA_VISIBLE_DEVICES="0,1,2,3"                                                                       
-ADDR=`echo $PADDLE_TRAINERS | awk -F "," '{print $1}'`                                                                                           
-NNODES=$PADDLE_TRAINERS_NUM
-RANK=$PADDLE_TRAINER_ID                                                                                                                          
+ADDR=`echo $TRAINERS | awk -F "," '{print $1}'`                                                                                           
+NNODES=$TRAINERS_NUM
+RANK=$TRAINER_ID                                                                                                                          
 PORT=8940
 
 
-PYTHON=/root/paddlejob/workspace/env_run/diffusion/bin/python
+PYTHON=/env_run/diffusion/bin/python
 
 OMP_NUM_THREADS=1 $PYTHON -m torch.distributed.launch --nproc_per_node 4 \
     --nnodes=$NNODES \
