@@ -46,7 +46,7 @@ bash ./command/lora_unet_adamw_hand_test_alpha128_bsd15.sh
 ### Stage 3: Soft Mixture Assignment
 
 ```shell
-bash ./command/lora_unet_adamw_hand_test_alpha128_bsd15.sh
+bash ./command/moe_unet_adamw_2ex_test_moe_50k_bsd15.sh
 ```
 
 ## Testing
