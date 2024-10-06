@@ -1,0 +1,36 @@
+[general]
+shuffle_caption = false
+keep_tokens = 0
+
+[[datasets]]
+resolution = [1024, 1024]
+batch_size = 2
+
+    
+    [[datasets.subsets]]
+    image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/hand_new'
+    metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/hand_new.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/models_512x512_v2/2015'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/models_2015.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/models_512x512_v2/2016'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/models_2016.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/models_512x512_v2/2017'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/models_2017.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/models_512x512_v2/2018'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/models_2018.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/models_512x512_v2/2019'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/models_2019.json'
+
+
+
+

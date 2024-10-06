@@ -1,0 +1,11 @@
+[general]
+shuffle_caption = false
+keep_tokens = 1
+
+[[datasets]]
+resolution = [1024, 1024]
+batch_size = 2
+
+  [[datasets.subsets]]
+  image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/face_new'
+  metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/clipfilter_caption_t20/face_new.json'

@@ -1,0 +1,65 @@
+[general]
+shuffle_caption = false
+keep_tokens = 0
+
+[[datasets]]
+resolution = [1024, 1024]
+batch_size = 2
+
+    [[datasets.subsets]]
+    image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/face_new'
+    metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/face_new.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/finetune-data_23411'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/finetune-data_23411.json'
+
+    #[[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/from_unleash'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/from_unleash.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/hand_new'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/hand_new.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/improved_pixabay'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/improved_pixabay.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/mole/hiqhquality_human_centric_1024/pexel_improved'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/mole/highquality_caption_t20/pexel_improved.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_test_v2'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_test_v2.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2_02'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2_02.json'
+
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2_03'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2_03.json'
+
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2_04'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2_04.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2_05'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2_05.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2_06'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2_06.json'
+
+    # [[datasets.subsets]]
+    # image_dir = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/improved_train_v2_07'
+    # metadata_file = '/root/paddlejob/workspace/env_run/output/zhujie/openimage/clipfilter_caption_t25/improved_train_v2_07.json'
