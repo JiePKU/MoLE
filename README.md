@@ -1,3 +1,4 @@
+![MoLE](https://github.com/JiePKU/MoLE/blob/master/img/title.png)
 
 ### <center>MoLE: Enhancing Human-centric Text-to-image Diffusion via Mixture of Low-rank Experts</center>
 
