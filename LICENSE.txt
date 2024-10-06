@@ -11,8 +11,8 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 
-The dataset itself (including JSON metadata, download script, and
-documentation) is made available under Creative Commons BY-NC-SA 4.0 license. You can use, redistribute, and adapt it for
-non-commercial purposes, as long as you (a) give appropriate credit by
-citing our paper, (b) indicate any changes that you've made, and
-(c) distribute any derivative works under the same license.
+The dataset itself (including JSON metadata, download script, and documentation) 
+is made available under Creative Commons BY-NC-SA 4.0 license. You can use, 
+redistribute, and adapt it for non-commercial purposes, as long as you (a) give 
+appropriate credit by citing our paper, (b) indicate any changes that you've made, 
+and (c) distribute any derivative works under the same license.
