@@ -8,6 +8,13 @@
 [Project homepage](https://sites.google.com/view/mole4diffuser/)|| [Paper](https://sites.google.com/view/mole4diffuser/)||
 [Model](https://huggingface.co/jiezhueval/MoLE-SDXL/tree/main)|| [Human-centric Dataset](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) [code: asd4]
 
+> [Jie Zhu](https://scholar.google.com/citations?user=ZL506kEAAAAJ&hl=zh-CN), [Yixiong Chen](https://schuture.github.io/), 
+> [Mingyu Ding](https://dingmyu.github.io/), [Ping Luo](http://luoping.me/),
+> [Leye Wang](https://wangleye.github.io/)&#8224;,
+> [Jingdong Wang](https://jingdongwang2017.github.io/)&#8224;
+> <br>Peking University, Johns Hopkins University, UC Berkeley, The University of Hong Kong, Baidu<br>
+
+
 ## Introduction
 This is an official implementation of MoLE, which is a human-centric text-to-image diffusion model. We provide the code for SD v1.5 and SDXL, respectively.  
 
