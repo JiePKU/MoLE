@@ -2,10 +2,10 @@
 
 ### <center>MoLE: Enhancing Human-centric Text-to-image Diffusion via Mixture of Low-rank Experts</center>
 
-###         <center>NeurIPS 2024</center>
+### <center>NeurIPS 2024</center>
 
-<center>[Project homepage](https://sites.google.com/view/mole4diffuser/) || [Paper](https://sites.google.com/view/mole4diffuser/) ||
-[Model](https://huggingface.co/jiezhueval/MoLE-SDXL/tree/main) || [Human-centric Dataset](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) [code: asd4]</center>
+[Project homepage](https://sites.google.com/view/mole4diffuser/)|| [Paper](https://sites.google.com/view/mole4diffuser/)||
+[Model](https://huggingface.co/jiezhueval/MoLE-SDXL/tree/main)|| [Human-centric Dataset](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) [code: asd4]
 
 ## Introduction
 This is an official implementation of MoLE, which is a human-centric text-to-image diffusion model. We provide the code for SD v1.5 and SDXL, respectively.  
