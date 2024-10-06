@@ -19,6 +19,7 @@ This dataset involves three subsets:human-in-the-scene images, close-up of face 
 
 We also provide the scripts of downloading raw images from corresponding websites. See directory ./climb_scripts
 
+##### <font color=red>NOTE:</font> Our dataset is allowed for academic purposes only. When using it, the users are requested to ensure compliance with legal regulations.
 
 #### If it is helpful, please give us a star and cite our paper. Thanks!
 
