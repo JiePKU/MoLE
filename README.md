@@ -1,6 +1,4 @@
 
-![MoLE](https://github.com/JiePKU/MIA-SafeCompress/blob/master/img/SafeCompress.JPG "SafeCompress") 
-
 ### <center>MoLE: Enhancing Human-centric Text-to-image Diffusion via Mixture of Low-rank Experts</center>
 
 ###         <center>NeurIPS 2024</center>
