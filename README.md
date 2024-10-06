@@ -15,10 +15,10 @@ Download the [Human-centric Dataset](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI
 
 This dataset involves three subsets:human-in-the-scene images, close-up of face images, and close-up of hand images, totally one million images. Moreover these images possess superior quality and boasts high aesthetic scores.
 
-#### We also provide the scripts of downloading raw images from corresponding websites. See directory ./climb_scripts
+We also provide the scripts of downloading raw images from corresponding websites. See directory ./climb_scripts
 
 
-if it is helpful, please give us a star and cite our paper. Thanks!
+#### If it is helpful, please give us a star and cite our paper. Thanks!
 
 ## Ackowledgement
 We thank the authors of [XFormer](https://github.com/lucidrains/xformers) for providing us with a great library. Our code is based on [sd-scripts](https://github.com/kohya-ss/sd-scripts). Thank the authors. We also thank Stability.ai for
