@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="img/title.png"  height=100>
+  <img src="img/title.png"  height=120>
 </p>
 
 ### <div align="center"> MoLE: Enhancing Human-centric Text-to-image Diffusion via Mixture of Low-rank Experts<div> 
