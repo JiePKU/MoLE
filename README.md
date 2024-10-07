@@ -22,7 +22,7 @@
 </div>
 
 <p align="center">
-  <img src="img/case.png"  height=280>
+  <img src="img/case.png"  height=400>
 </p>
 
 
