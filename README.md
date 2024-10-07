@@ -13,13 +13,18 @@
 
 <div align="center">
 
-> [Jie Zhu](https://scholar.google.com/citations?user=ZL506kEAAAAJ&hl=zh-CN), [Yixiong Chen](https://schuture.github.io/), 
-> [Mingyu Ding](https://dingmyu.github.io/), [Ping Luo](http://luoping.me/),
-> [Leye Wang](https://wangleye.github.io/)&#8224;,
-> [Jingdong Wang](https://jingdongwang2017.github.io/)&#8224;
-> <br>Peking University, Johns Hopkins University, UC Berkeley, The University of Hong Kong, Baidu<br>
+[Jie Zhu](https://scholar.google.com/citations?user=ZL506kEAAAAJ&hl=zh-CN), [Yixiong Chen](https://schuture.github.io/), 
+[Mingyu Ding](https://dingmyu.github.io/), [Ping Luo](http://luoping.me/),
+[Leye Wang](https://wangleye.github.io/)&#8224;,
+[Jingdong Wang](https://jingdongwang2017.github.io/)&#8224;
+<br>Peking University, Johns Hopkins University, UC Berkeley, The University of Hong Kong, Baidu<br>
 
 </div>
+
+<p align="center">
+  <img src="img/case.png"  height=280>
+</p>
+
 
 ## Introduction
 This is an official implementation of MoLE, which is a human-centric text-to-image diffusion model. We provide the code for SD v1.5 and SDXL, respectively.  
