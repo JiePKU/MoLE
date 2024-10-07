@@ -13,7 +13,7 @@
 
 <div align="center">
 
-[Jie Zhu](https://scholar.google.com/citations?user=ZL506kEAAAAJ&hl=zh-CN), [Yixiong Chen](https://schuture.github.io/), 
+>[Jie Zhu](https://scholar.google.com/citations?user=ZL506kEAAAAJ&hl=zh-CN), [Yixiong Chen](https://schuture.github.io/), 
 [Mingyu Ding](https://dingmyu.github.io/), [Ping Luo](http://luoping.me/),
 [Leye Wang](https://wangleye.github.io/)&#8224;,
 [Jingdong Wang](https://jingdongwang2017.github.io/)&#8224;
