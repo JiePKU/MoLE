@@ -1,19 +1,14 @@
 
-
+# Thanks to dataset provider:Copyright(c) 2018, seeprettyface.com, BUPT_GWY contributes the dataset
 import math
 import torch
 import os
 import collections
 from timm.models.vision_transformer import Mlp
-
-
 import torch.nn as nn
 import torch.nn.functional as F
-
 from torch import nn, einsum, Tensor
-
 from einops import rearrange, pack, unpack
-
 
 class SoftMoELayer(nn.Module):
     def __init__(self, experts, scales, d, n, d2):
