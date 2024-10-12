@@ -1,5 +1,14 @@
 
-# Thanks to dataset provider:Copyright(c) 2018, seeprettyface.com, BUPT_GWY contributes the dataset
+#################################################################################################################
+# Thanks to dataset provider:Copyright(c) 2018, seeprettyface.com, BUPT_GWY contributes the dataset         
+                                                                                                            
+# Note that this implementation draws inspiration from our observation of low-rank                         
+# refinement, where a low-rank module trained by a customized close-up dataset has                          
+# the potential to enhance the corresponding image part when applied at an appropriate scale.               
+                                                                                                            
+# Copyright(c) 2024, Jie Zhu, All rights reserved                                                           
+#################################################################################################################
+
 import math
 import torch
 import os
@@ -13,15 +22,23 @@ from einops import rearrange, pack, unpack
 class SoftMoELayer(nn.Module):
     def __init__(self, experts, scales, d, n, d2):
         super(SoftMoELayer, self).__init__()
-        self.Phi_1 = nn.Linear(d, n) 
-        self.face_scale = nn.Linear(d2, 1)
-        """ if GPU memory is enough, we can use MLP instead of Linear to increase the flexibility of expert"""
+        
+        self.Phi_1 = nn.Linear(d, n) ## Local assignment (token-wise)
+        
+
+        """ face global assignment """
+        # if GPU memory is enough, we can use MLP instead of Linear to increase the flexibility of expert"""
         # approx_gelu = lambda: nn.GELU(approximate="tanh") ## update it with a stronger gate module
         # self.face_scale =  Mlp(in_features=d2, hidden_features=d2//2, out_features=1, act_layer=approx_gelu, drop=0.1) 
+        self.face_scale = nn.Linear(d2, 1)  
         self.face_pool = nn.AdaptiveAvgPool1d(1)
-        self.hand_scale = nn.Linear(d2, 1)
+        
+        """ hand global assignment """
         # self.hand_scale =  Mlp(in_features=d2, hidden_features=d2//2, out_features=1, act_layer=approx_gelu, drop=0.1)
+        self.hand_scale = nn.Linear(d2, 1)
         self.hand_pool = nn.AdaptiveAvgPool1d(1)
+
+        ##### lora experts and corrsponding scales brought by itself #####
         self.experts = experts
         self.scales = scales
 
@@ -31,21 +48,27 @@ class SoftMoELayer(nn.Module):
 
         if len(X.size())==4:
             """
-            This is for conv lora
+            This is for conv lora inputs, which is a 4D tensor
+            We flatten the tensor to 3D, and permute it to (B, m, d)
             """
             is_conv = True
             B, d, H, W = X.size()
             X = X.permute(0, 2, 3, 1).view(B, -1, d)
 
-        logits = self.Phi_1(X)  # torch.einsum("bmd,dn->bmn", self.norm(X, dim=2), self.moe_norm(self.Phi_1, dim=0))
+        """ produce local assignment score """
+        logits = self.Phi_1(X)  
         B, m, n = logits.size()
-
+        ## we use sigmoid to get the weight of each token being assigned to each expert
         D = torch.sigmoid(logits) # b m n
 
+
+              
+        """ produce global assignment score and apply local and global score together  """
+
+        # produce output from each expert, pay attention to the expert order
         results = [f_i(X.permute(0, 2, 1).view(B, d, int(math.sqrt(m)), -1) if is_conv else X) * self.scales[i] for i, f_i in enumerate (self.experts)]
         
-        # print(f"{len(results)} experts")
-        
+        # produce global score and assign local and global score together to the output
         for ind, (result, pool, scale_module) in enumerate(zip(results, [self.face_pool, self.hand_pool], [self.face_scale, self.hand_scale])):
             if is_conv:
                 # print(result.view(B, d, -1).size(), scale_module.weight.shape, (pool(result.view(B, d, -1)).size()))
@@ -54,12 +77,9 @@ class SoftMoELayer(nn.Module):
                 # print(result.permute(0, 2, 1).size(), scale_module.weight.shape, torch.sigmoid(scale_module(pool(result.view(B, d, -1)))).size())
                 results[ind] = result * D[:,:,ind].unsqueeze(dim=2) * torch.sigmoid(scale_module(pool(result.permute(0, 2, 1)).permute(0, 2, 1)))# soft assign
             
-        ## cal scale weight
-        # Y = torch.cat(results, dim=2)
-        # # print("Y size:", Y.shape)
-        # Y = self.Phi_2(Y)  ## b m 2*d -> b m d 
-
+        ### return the summed refinement from the two side experts
         if is_conv:
+            ### recover them back to the original shape if it is conv
             return results[0].permute(0, 2, 1).view(B, d, H, W) + results[1].permute(0, 2, 1).view(B, d, H, W)
         else:
             return results[0] + results[1]
@@ -78,18 +98,23 @@ class WrapperMoELayer(nn.Module):
                                                             ('lora_up', expert.lora_up)])) for expert in experts]
 
         try:
+            ## For nn.Linear
             d = experts[0].lora_down.in_features
             d2 = experts[0].lora_up.out_features
-        except: 
+        except:
+            ## For nn.Conv 
             d = experts[0].lora_down.in_channels
             d2 = experts[0].lora_up.out_channels
 
         scales = [expert.scale for expert in experts]
 
-        # self.gamma = nn.Parameter(torch.ones(1), requires_grad=True)
+        """To futher add flexibility but we do not use it currently"""
+        # self.gamma = nn.Parameter(torch.ones(1), requires_grad=True) 
+        
         self.softmoe = SoftMoELayer(experts_remove_org, scales, d, n, d2)
         self.moe_name = "moe_" + name
 
+        ### replace the original forward function of the expert with the new one here
         self.expert = experts[0]
         self.main_branch = self.expert.org_module.forward  ## must before the applyto function of LoRAModule
         self.expert.org_module.forward = self.forward
@@ -102,10 +127,8 @@ class WrapperMoELayer(nn.Module):
 
         # print(self.moe_name, self.softmoe.experts[1].lora_down.weight.requires_grad, self.softmoe.experts[1].lora_down.weight)
 
-        return x + Y # * self.gamma
+        return x + Y  # * self.gamma 
   
-import os 
-
 class WrapperLoRANetwork(nn.Module):
     def __init__(self, networks_list, num_experts):
         super().__init__()
@@ -117,12 +140,11 @@ class WrapperLoRANetwork(nn.Module):
         assert len(networks_list) == num_experts, "the length of the networks_list should be equal to the number of experts"
 
         num_LoRAModules = len(networks_list[0].unet_loras)
-        print(f"init LoRA modules")
-        count = 0
+
+        ### For each face-hand LoRAModule pair, we create a MoELayer
         self.moelayer_list = []
         for (faceLoRAModule, handLoRAModule) in zip(networks_list[0].unet_loras, networks_list[1].unet_loras):
-            print(f"add lora module {count}")
-            count += 1
+
             self.moelayer_list.append(WrapperMoELayer([faceLoRAModule, handLoRAModule], handLoRAModule.lora_name, num_experts))
 
         print(f"init {len(self.moelayer_list)} MoE layer")
@@ -237,6 +259,9 @@ class WrapperLoRANetwork(nn.Module):
         return info
 
 def create_moe(networks_list, num_experts=2):
+    """
+    Simply create the moe network
+    """
     moe_network = WrapperLoRANetwork(networks_list, num_experts)
     return moe_network
 

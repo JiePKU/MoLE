@@ -47,8 +47,6 @@ class SdxlMOETrainer(train_moe.MOETrainer):
         self.logit_scale = logit_scale
         self.ckpt_info = ckpt_info
 
-        # print("text:", text_encoder1.dtype, text_encoder2.dtype)  
-
         return sdxl_model_util.MODEL_VERSION_SDXL_BASE_V1_0, [text_encoder1, text_encoder2], vae, unet
 
     def load_tokenizer(self, args):

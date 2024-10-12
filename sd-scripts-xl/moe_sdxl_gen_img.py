@@ -724,71 +724,6 @@ class PipelineLike:
 
         each_control_net_enabled = [self.control_net_enabled] * len(self.control_nets)
 
-        # # first, we downscale the latents to the half of the size
-        # # 最初に1/2に縮小する
-        # height, width = latents.shape[-2:]
-        # # latents = torch.nn.functional.interpolate(latents.float(), scale_factor=0.5, mode="bicubic", align_corners=False).to(
-        # #     latents.dtype
-        # # )
-        # latents = latents[:, :, ::2, ::2]
-        # current_scale = 0.5
-
-        # # how much to increase the scale at each step: .125 seems to work well (because it's 1/8?)
-        # # 各ステップに拡大率をどのくらい増やすか：.125がよさそう（たぶん1/8なので）
-        # scale_step = 0.125
-
-        # # timesteps at which to start increasing the scale: 1000 seems to be enough
-        # # 拡大を開始するtimesteps: 1000で十分そうである
-        # start_timesteps = 1000
-
-        # # how many steps to wait before increasing the scale again
-        # # small values leads to blurry images (because the latents are blurry after the upscale, so some denoising might be needed)
-        # # large values leads to flat images
-
-        # # 何ステップごとに拡大するか
-        # # 小さいとボケる（拡大後のlatentsはボケた感じになるので、そこから数stepのdenoiseが必要と思われる）
-        # # 大きすぎると細部が書き込まれずのっぺりした感じになる
-        # every_n_steps = 5
-
-        # scale_step = input("scale step:")
-        # scale_step = float(scale_step)
-        # start_timesteps = input("start timesteps:")
-        # start_timesteps = int(start_timesteps)
-        # every_n_steps = input("every n steps:")
-        # every_n_steps = int(every_n_steps)
-
-        # # for i, t in enumerate(tqdm(timesteps)):
-        # i = 0
-        # last_step = 0
-        # while i < len(timesteps):
-        #     t = timesteps[i]
-        #     print(f"[{i}] t={t}")
-
-        #     print(i, t, current_scale, latents.shape)
-        #     if t < start_timesteps and current_scale < 1.0 and i % every_n_steps == 0:
-        #         if i == last_step:
-        #             pass
-        #         else:
-        #             print("upscale")
-        #             current_scale = min(current_scale + scale_step, 1.0)
-
-        #             h = int(height * current_scale) // 8 * 8
-        #             w = int(width * current_scale) // 8 * 8
-
-        #             latents = torch.nn.functional.interpolate(latents.float(), size=(h, w), mode="bicubic", align_corners=False).to(
-        #                 latents.dtype
-        #             )
-        #             last_step = i
-        #             i = max(0, i - every_n_steps + 1)
-
-        #             diff = timesteps[i] - timesteps[last_step]
-        #             # resized_init_noise = torch.nn.functional.interpolate(
-        #             #     init_noise.float(), size=(h, w), mode="bicubic", align_corners=False
-        #             # ).to(latents.dtype)
-        #             # latents = self.scheduler.add_noise(latents, resized_init_noise, diff)
-        #             latents = self.scheduler.add_noise(latents, torch.randn_like(latents), diff * 4)
-        #             # latents += torch.randn_like(latents) / 100 * diff
-        #             continue
 
         enable_gradual_latent = False
         if self.gradual_latent:
@@ -812,22 +747,6 @@ class PipelineLike:
                 # apply unsharp mask / アンシャープマスクを適用する
                 if self.gradual_latent.gaussian_blur_ksize:
                     latents = self.gradual_latent.apply_unshark_mask(latents)
-
-        # torch.save({"text":text_embeddings,
-        # "vector": vector_embeddings}, "/root/paddlejob/workspace/env_run/output/temp.pth")
-
-        # # print(text_embeddings)
-        # # print(vector_embeddings)
-        # # print(latents)
-
-        # # print("vae dtype:", self.vae.dtype, self.vae.training)
-        # # print("unet dtype:", self.unet.dtype, self.unet.training)
-        # # print("te1 dtype:", self.text_encoders[0].dtype, self.text_encoders[0].training)
-        # # print("te2 dtype:", self.text_encoders[1].dtype, self.text_encoders[1].training)
-
-        # torch.save({"unet": self.unet.state_dict()}, "/root/paddlejob/workspace/env_run/output/unet.pth")
-
-        # print(timesteps)
 
 
         for i, t in enumerate(tqdm(timesteps)):
@@ -871,13 +790,6 @@ class PipelineLike:
             if do_classifier_free_guidance:
                 if negative_scale is None:
                     noise_pred_uncond, noise_pred_text = noise_pred.chunk(num_latent_input)  # uncond by negative prompt
-                    # return 
-                    # """
-                    # [ 9.8047e-01, -3.2227e-01, -1.3281e+00,  ...,  5.3906e-01,
-                    # -1.7578e+00,  1.3574e-01],
-                    # [ 1.9336e-01,  1.2188e+00, -2.7344e-01,  ...,  6.3672e-01,
-                    #     7.4219e-01,  5.9766e-01],
-                    # """
                     noise_pred = noise_pred_uncond + guidance_scale * (noise_pred_text - noise_pred_uncond)
                 else:
                     noise_pred_negative, noise_pred_text, noise_pred_uncond = noise_pred.chunk(
@@ -1215,9 +1127,6 @@ def get_weighted_text_embeddings(
         new_prompts.extend(p.split(" AND "))
     prompt = new_prompts
 
-    ## [[320, 1888, 2308, 593, 40925, 267, 3467, 3095, 537, 2225, 682, 48107, 34958, 530, 518, 20001, 269]] [[1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]]
-    ## [[]] [[]]
-
     if not skip_parsing:
         prompt_tokens, prompt_weights = get_prompts_with_weights(tokenizer, token_replacer, prompt, max_length - 2)
         if uncond_prompt is not None:
@@ -1274,7 +1183,6 @@ def get_weighted_text_embeddings(
         uncond_tokens = torch.tensor(uncond_tokens, dtype=torch.long, device=device)
     
     # get the embeddings
-    
     text_embeddings, text_pool = get_unweighted_text_embeddings(
         text_encoder,
         prompt_tokens,
@@ -1284,9 +1192,6 @@ def get_weighted_text_embeddings(
         pad,
         no_boseos_middle=no_boseos_middle,
     )
-
-     #, text_embeddings)
-
 
     prompt_weights = torch.tensor(prompt_weights, dtype=text_embeddings.dtype, device=device)
     
@@ -1681,7 +1586,8 @@ def main(args):
     text_encoder2.eval()
     unet.eval()
 
-    # networkを組み込む
+
+    """############################################# load face and hand experts #############################################"""
     if args.network_module:
         networks = []
         network_default_muls = []
@@ -1735,7 +1641,7 @@ def main(args):
             else:
                 raise ValueError("No weight. Weight is required.")
         
-        mergeable = False # network.is_mergeable()
+        mergeable = False  ## we do not merge so as to load moe layer
         if network_merge and not mergeable:
             logger.warning("network is not mergiable. ignore merge option.")
 
@@ -1758,32 +1664,37 @@ def main(args):
                 network_face.backup_weights()
                 network_hand.backup_weights()
 
-            # networks.append(network)
-            # network_default_muls.append(network_mul)
-
         else:
             network.merge_to([text_encoder1, text_encoder2], unet, weights_sd, dtype, device)
 
-        
+
         if network_hand is None:
             return
 
     else:
         networks = []
 
+    
+    """#######################################################################################################################"""
+
+
+    """############################################# load moe module #############################################"""
 
     print("import network module:", args.network_module_moe[0])
     moe_module = importlib.import_module(args.network_module_moe[0])
 
     #### create MoENetwork
-    n = 2 ## p must be square
+    n = 2 
     experts_List = [network_face, network_hand]
     network_moe = moe_module.create_moe(experts_List, num_experts=n)
     network_moe.apply_to()
+    ## load weights
     if args.network_weights_moe[0]:
         info = network_moe.load_weights(args.network_weights_moe[0])
         print(info)
     network_moe.to(dtype).to(device)
+
+    """##############################################################################################################"""
 
 
     # upscalerの指定があれば取得する
@@ -1870,16 +1781,6 @@ def main(args):
         scheduler,
         args.clip_skip,
     )
-
-    # for name, module in text_encoder1.named_parameters():
-    #     print(name, module)
-    #     break
-    # print("*"*10)
-
-    # for name, module in text_encoder2.named_parameters():
-    #     print(name, module)
-    #     break
-    # print("*"*10)
 
     pipe.set_control_nets(control_nets)
     logger.info("pipeline is ready.")
@@ -2149,8 +2050,13 @@ def main(args):
     # 画像生成のループ
     os.makedirs(args.outdir, exist_ok=True)
     max_embeddings_multiples = 1 if args.max_embeddings_multiples is None else args.max_embeddings_multiples
-    import random
-    random.shuffle(prompt_list)
+    
+    ### if you want to shuffle prompts, uncomment the following line
+    # import random
+    # random.shuffle(prompt_list)
+
+    """############################################# generate image #############################################"""
+
     for gen_iter in range(args.n_iter):
         logger.info(f"iteration {gen_iter+1}/{args.n_iter}")
         iter_seed = random.randint(0, 0x7FFFFFFF)
@@ -2894,7 +2800,10 @@ def main(args):
         if len(batch_data) > 0:
             process_batch(batch_data, highres_fix)
             batch_data.clear()
+            
     logger.info("done!")
+    
+    """###################################################################################################################"""
 
 
 def setup_parser() -> argparse.ArgumentParser:

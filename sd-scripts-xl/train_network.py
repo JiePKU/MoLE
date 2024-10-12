@@ -810,13 +810,7 @@ class NetworkTrainer:
                 os.remove(old_ckpt_file)
 
         # For --sample_at_first
-
-        # print("vae:", next(vae.parameters()).device)
-        # print("unet:", next(unet.parameters()).device)
-        # print("text 1:", next(text_encoders[0].parameters()).device)
-        # print("text 2:", next(text_encoders[1].parameters()).device)
-
-        self.sample_images(accelerator, args, 0, global_step, accelerator.device, vae, tokenizer, text_encoder, unet)
+        # self.sample_images(accelerator, args, 0, global_step, accelerator.device, vae, tokenizer, text_encoder, unet)
 
         # training loop
         for epoch in range(num_train_epochs):

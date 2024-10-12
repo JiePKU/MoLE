@@ -3500,7 +3500,6 @@ def sample_images(
     vae.to(device)
 
     # read prompts
-
     # with open(args.sample_prompts, "rt", encoding="utf-8") as f:
     #     prompts = f.readlines()
 
@@ -3598,7 +3597,6 @@ def sample_images(
                     # prompt = prompt.strip()
                     # if len(prompt) == 0 or prompt[0] == "#":
                     #     continue
-
                     # subset of gen_img_diffusers
                     prompt_args = prompt.split(" --")
                     prompt = prompt_args[0]

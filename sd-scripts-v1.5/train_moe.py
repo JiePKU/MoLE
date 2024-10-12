@@ -216,8 +216,12 @@ def train(args):
         for net_arg in args.network_args:
             key, value = net_arg.split("=")
             net_kwargs[key] = value
+    
+    
+    
+    """########################################################### main part of our mole ############################################################# """
 
-    # if a new network is added in future, add if ~ then blocks for each network (;'∀')
+    # create and load experts from weights directly
     if args.dim_from_weights:
         network_face, _ = network_module.create_network_from_weights(1, args.face_network_weights, vae, text_encoder, unet, **net_kwargs)
         network_hand, _ = network_module.create_network_from_weights(1, args.hand_network_weights, vae, text_encoder, unet, **net_kwargs)
@@ -239,9 +243,10 @@ def train(args):
 
     train_unet = not args.network_train_text_encoder_only
     train_text_encoder = not args.network_train_unet_only
-    network_face.apply_to(text_encoder, unet, train_text_encoder, train_unet, False)  # False preserved for mole
-    network_hand.apply_to(text_encoder, unet, train_text_encoder, train_unet, False)
+    network_face.apply_to(text_encoder, unet, train_text_encoder, train_unet,  False)  # False preserved for mole 
+    network_hand.apply_to(text_encoder, unet, train_text_encoder, train_unet,  False)
 
+    ### load the face and hand network weights if it exists
     if args.face_network_weights is not None:
         info = network_face.load_weights(args.face_network_weights)
         print(f"loaded network weights from {args.face_network_weights}: {info}")
@@ -250,17 +255,23 @@ def train(args):
         info = network_hand.load_weights(args.hand_network_weights)
         print(f"loaded network weights from {args.hand_network_weights}: {info}")
 
-    #### create MoENetwork
-    n = 2 # two expert
-    experts_List = [network_face, network_hand]
-    network_moe = moe_module.create_moe(experts_List, num_experts=n)
-    network_moe.apply_to()
 
+    ########## Create MoENetwork ############
+
+    n = 2 ## two experts here in our paper are hand and face, you can also add more experts accordingly 
+    experts_List = [network_face, network_hand]  ## Keep the experts in a list and pay attention to the order
+    network_moe = moe_module.create_moe(experts_List, num_experts=n) ## create MoENetwork 
+    network_moe.apply_to() ## Prepare for MoENetwork Training
+
+    ### load the moe weigths if it exists
     if args.moe_network_weights is not None:
         info = network_moe.load_weights(args.moe_network_weights)
         print(f"loaded network weights from {args.moe_network_weights}: {info}")
     
 
+   
+     """###########################################################################################################################"""
+    
     if args.gradient_checkpointing:
         unet.enable_gradient_checkpointing()
         text_encoder.gradient_checkpointing_enable()
@@ -317,6 +328,10 @@ def train(args):
         print("enabling full fp16 training.")
         network_moe.to(weight_dtype)
 
+    
+    """########################################################## Prepare for Training Network  ##################################################################"""
+    
+
     # acceleratorがなんかよろしくやってくれるらしい
     if train_unet and train_text_encoder:
         unet, text_encoder, network, optimizer, train_dataloader, lr_scheduler = accelerator.prepare(
@@ -336,6 +351,10 @@ def train(args):
     # transform DDP after prepare (train_network here only)
     text_encoder, unet, network_face, network_hand, network_moe = train_util.transform_if_model_is_DDP_moe(text_encoder, unet, network_face, network_hand, network_moe)
 
+    
+    """
+    Note that we only train the network_moe, and the network_face, network_hand, and base model are not trained
+    """
     unet.requires_grad_(False)
     unet.to(accelerator.device, dtype=weight_dtype)
 
@@ -359,7 +378,7 @@ def train(args):
         network_hand.eval()
         network_face.eval()
 
-    network_moe.prepare_grad_etc(text_encoder, unet)
+    network_moe.prepare_grad_etc(text_encoder, unet) 
 
     if not cache_latents:  # キャッシュしない場合はVAEを使うのでVAEを準備する
         vae.requires_grad_(False)
@@ -378,6 +397,9 @@ def train(args):
     num_train_epochs = math.ceil(args.max_train_steps / num_update_steps_per_epoch)
     if (args.save_n_epoch_ratio is not None) and (args.save_n_epoch_ratio > 0):
         args.save_every_n_epochs = math.floor(num_train_epochs / args.save_n_epoch_ratio) or 1
+
+    """####################################################################################################################################"""
+    
 
     # 学習する
     # TODO: find a way to handle total batch size when there are multiple datasets
@@ -637,7 +659,10 @@ def train(args):
             print(f"removing old checkpoint: {old_ckpt_file}")
             os.remove(old_ckpt_file)
 
-    # # training loop
+    
+    """######################################################### training loop ####################################################"""
+    
+
     for epoch in range(num_train_epochs):
         if is_main_process:
             print(f"\nepoch {epoch+1}/{num_train_epochs}")
@@ -807,6 +832,10 @@ def train(args):
         train_util.sample_images(accelerator, args, epoch + 1, global_step, accelerator.device, vae, tokenizer, text_encoder, unet)
 
 
+   
+     """##################################################################################################################################"""
+    
+    
     # metadata["ss_epoch"] = str(num_train_epochs)
     metadata["ss_training_finished_at"] = str(time.time())
 
@@ -819,6 +848,9 @@ def train(args):
         train_util.save_state_on_train_end(args, accelerator)
 
     del accelerator  # この後メモリを使うのでこれは消す
+
+    
+    ####### save the final moe model #######
 
     if is_main_process:
         ckpt_name = train_util.get_last_ckpt_name(args, "." + args.save_model_as)

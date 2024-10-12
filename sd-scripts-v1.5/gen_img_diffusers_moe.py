@@ -2504,10 +2504,12 @@ def main(args):
     if vgg16_model is not None:
         vgg16_model.to(dtype).to(device)
 
-    # networkを組み込む
+    
+    """############################################# load face and hand experts #############################################"""
+
     if args.network_module:
         networks = []
-        print("==================================================")
+        print("import network module:", args.network_module[0])
         network_default_muls = []
         network_pre_calc = args.network_pre_calc
 
@@ -2549,11 +2551,12 @@ def main(args):
                     )
             else:
                 raise ValueError("No weight. Weight is required.")
-            
+
+
         if network_hand is None:
             return
 
-        mergeable = False ## network.is_mergeable()
+        mergeable = False ## we do not merge so as to load moe layer
         if args.network_merge and not mergeable:
             print("network is not mergiable. ignore merge option.")
 
@@ -2577,26 +2580,30 @@ def main(args):
                 network_hand.backup_weights()
                 network_face.backup_weights()
 
-            # networks.append(network)
-        # else:
-        #     network_face.merge_to(text_encoder, unet, weights_sd, dtype, device)
-        #     network_face.merge_to(text_encoder, unet, weights_sd, dtype, device)
-
     else:
         networks = []
+
+
+    """#######################################################################################################################"""
+
+
+    """############################################# load moe module #############################################"""
 
     print("import network module:", args.network_module_moe[0])
     moe_module = importlib.import_module(args.network_module_moe[0])
 
     #### create MoENetwork
-    n = 2 ## p must be square
+    n = 2 
     experts_List = [network_face, network_hand]
     network_moe = moe_module.create_moe(experts_List, num_experts=n)
     network_moe.apply_to()
+    ## load weights
     if args.network_weights_moe[0]:
         info = network_moe.load_weights(args.network_weights_moe[0])
         print(info)
     network_moe.to(dtype).to(device)
+
+    """##############################################################################################################"""
 
     # upscalerの指定があれば取得する
     upscaler = None
@@ -2931,11 +2938,14 @@ def main(args):
     os.makedirs(args.outdir, exist_ok=True)
     max_embeddings_multiples = 1 if args.max_embeddings_multiples is None else args.max_embeddings_multiples
 
+    
+    """############################################# generate image #############################################"""
+
     for gen_iter in range(args.n_iter):
         print(f"iteration {gen_iter+1}/{args.n_iter}")
         iter_seed = random.randint(0, 0x7FFFFFFF)
 
-        # バッチ処理の関数
+        # Core function for generating images
         def process_batch(batch: List[BatchData], highres_fix, highres_1st=False):
             batch_size = len(batch)
 
@@ -3406,6 +3416,8 @@ def main(args):
             batch_data.clear()
 
     print("done!")
+
+    """###################################################################################################################"""
 
 
 def setup_parser() -> argparse.ArgumentParser:

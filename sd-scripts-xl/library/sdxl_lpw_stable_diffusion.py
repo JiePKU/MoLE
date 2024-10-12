@@ -995,28 +995,6 @@ class SdxlStableDiffusionLongPromptWeightingPipeline:
             vector_embedding = torch.cat([text_pool, embs], dim=1).to(dtype)
 
 
-        # state = torch.load("/root/paddlejob/workspace/env_run/output/temp.pth")
-        
-        # text_embedding = state["text"]
-        # vector_embedding = state["vector"]
-
-        # # print(text_embedding.dtype)
-        # # print(vector_embedding.dtype)
-        # # print(latents.dtype)
-
-        # print("vae dtype:", self.vae.dtype, self.vae.training)
-        # print("unet dtype:", self.unet.dtype, self.unet.training)
-        # print("te1 dtype:", self.text_encoders[0].dtype, self.text_encoders[0].training)
-        # print("te2 dtype:", self.text_encoders[1].dtype, self.text_encoders[1].training)
-        # # print("noise type", latents.dtype, latents)
-
-        # msg = self.unet.load_state_dict(torch.load("/root/paddlejob/workspace/env_run/output/unet.pth")["unet"], strict=False)
-        # print(msg)
-
-        # print(timesteps)
-        # timesteps = timesteps + 1
-        # print(timesteps)
-
         # 8. Denoising loop
         for i, t in enumerate(self.progress_bar(timesteps)):
             # expand the latents if we are doing classifier free guidance

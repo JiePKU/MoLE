@@ -237,9 +237,6 @@ class MOETrainer:
 
         model_version, text_encoder, vae, unet = self.load_target_model(args, weight_dtype, accelerator)
 
-        # print(te.dtype for te in text_encoder)
-        # print(vae.dtype, unet.dtype)
-
         # text_encoder is List[CLIPTextModel] or CLIPTextModel
         text_encoders = text_encoder if isinstance(text_encoder, list) else [text_encoder]
 
@@ -299,6 +296,8 @@ class MOETrainer:
                 net_kwargs[key] = value
 
         ### if a new network is added in future, add if ~ then blocks for each network (;'∀')
+        
+        """########################################################### main part of our mole ############################################################# """
 
         if args.dim_from_weights:
             network_face, _ = network_module.create_network_from_weights(1, args.face_network_weights, vae, text_encoder, unet, **net_kwargs)
@@ -350,7 +349,7 @@ class MOETrainer:
         network_face.apply_to(text_encoder, unet, train_text_encoder, train_unet, False)  # False preserved
         network_hand.apply_to(text_encoder, unet, train_text_encoder, train_unet, False)
 
-        
+        ### load the face and hand network weights if it exists        
         if args.face_network_weights is not None:
             info = network_face.load_weights(args.face_network_weights)
             print(f"loaded face network weights from {args.face_network_weights}: {info}")
@@ -359,19 +358,23 @@ class MOETrainer:
             info = network_hand.load_weights(args.hand_network_weights)
             print(f"loaded hand network weights from {args.hand_network_weights}: {info}")
 
-        #### create MoENetwork
-        n = 2 
-        experts_List = [network_face, network_hand]
-        network_moe = moe_module.create_moe(experts_List, num_experts=n)
+        
+        ########## Create MoENetwork ############
+
+        n = 2 ## two experts here in our paper are hand and face, you can also add more experts accordingly 
+        experts_List = [network_face, network_hand]  ## Keep the experts in a list and pay attention to the order
+        network_moe = moe_module.create_moe(experts_List, num_experts=n) ## create MoENetwork 
         print("create moe")
         network_moe.apply_to()
 
-        print("here is apply")
+        ### load the moe weigths if it exists
         if args.moe_network_weights is not None:
             info = network_moe.load_weights(args.moe_network_weights)
             print(f"loaded moe network weights from {args.moe_network_weights}: {info}")
         
 
+        """###########################################################################################################################"""
+    
         if args.gradient_checkpointing:
             unet.enable_gradient_checkpointing()
             for t_enc in text_encoders:
@@ -440,7 +443,6 @@ class MOETrainer:
 
         unet_weight_dtype = te_weight_dtype = weight_dtype
 
-        # print("unet_weight_dtype, te_weight_dtype, weight_dtype", unet_weight_dtype, te_weight_dtype, weight_dtype)
 
         # Experimental Feature: Put base model into fp8 to save vram
         if args.fp8_base:
@@ -452,11 +454,13 @@ class MOETrainer:
             unet_weight_dtype = torch.float8_e4m3fn
             te_weight_dtype = torch.float8_e4m3fn
 
+
+        """########################################################## Prepare for Training Network  ##################################################################"""
+    
         unet.requires_grad_(False)
         unet.to(dtype=unet_weight_dtype)
         for t_enc in text_encoders:
             t_enc.requires_grad_(False)
-            # print("te device and dtype", t_enc.device, t_enc.dtype)
             # in case of cpu, dtype is already set to fp32 because cpu does not support fp8/fp16/bf16
             if t_enc.device.type != "cpu":
                 t_enc.to(dtype=te_weight_dtype)
@@ -568,6 +572,8 @@ class MOETrainer:
         if (args.save_n_epoch_ratio is not None) and (args.save_n_epoch_ratio > 0):
             args.save_every_n_epochs = math.floor(num_train_epochs / args.save_n_epoch_ratio) or 1
 
+        """####################################################################################################################################"""
+    
         # 学習する
         # TODO: find a way to handle total batch size when there are multiple datasets
         total_batch_size = args.train_batch_size * accelerator.num_processes * args.gradient_accumulation_steps
@@ -854,11 +860,11 @@ class MOETrainer:
                 accelerator.print(f"removing old checkpoint: {old_ckpt_file}")
                 os.remove(old_ckpt_file)
 
-        # For --sample_at_first
+        # For --sample_at_first if you want to sample images at the beginning of training, uncomment the following line
+        # self.sample_images(accelerator, args, 0, global_step, accelerator.device, vae, tokenizer, text_encoder, unet)
 
-        self.sample_images(accelerator, args, 0, global_step, accelerator.device, vae, tokenizer, text_encoder, unet)
-
-        # training loop
+        """######################################################### training loop ####################################################"""
+    
         for epoch in range(num_train_epochs):
             accelerator.print(f"\nepoch {epoch+1}/{num_train_epochs}")
             current_epoch.value = epoch + 1
@@ -1047,6 +1053,8 @@ class MOETrainer:
 
             # end of epoch
 
+        """##################################################################################################################################"""
+    
         # metadata["ss_epoch"] = str(num_train_epochs)
         metadata["ss_training_finished_at"] = str(time.time())
 
@@ -1058,6 +1066,7 @@ class MOETrainer:
         if is_main_process and (args.save_state or args.save_state_on_train_end):
             train_util.save_state_on_train_end(args, accelerator)
 
+        ####### save the final moe model #######
         # if is_main_process:
         #     ckpt_name = train_util.get_last_ckpt_name(args, "." + args.save_model_as)
         #     save_model(ckpt_name, network_moe, global_step, num_train_epochs, force_sync_upload=True)
