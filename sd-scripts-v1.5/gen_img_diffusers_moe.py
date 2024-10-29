@@ -3064,8 +3064,8 @@ def main(args):
             all_masks_are_same = True
             all_guide_images_are_same = True
             for i, (_, (_, prompt, negative_prompt, seed, init_image, mask_image, clip_prompt, guide_image), _) in enumerate(batch):
-                prompts.append(prompt) #  + " best quality, 8K" if needed, add it
-                negative_prompts.append(negative_prompt) # + " poor quality, unclear hand, bad face " if needed, add it
+                prompts.append(prompt + " best quality, 8K")    # recommend to add: " best quality, 8K"
+                negative_prompts.append(negative_prompt + " poor quality, unclear hand, bad face ") # recommend to add: " poor quality, unclear hand, bad face "
                 # seed = 959864023
                 seeds.append(seed)
                 clip_prompts.append(clip_prompt)

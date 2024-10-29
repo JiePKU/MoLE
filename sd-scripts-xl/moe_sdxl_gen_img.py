@@ -2219,10 +2219,8 @@ def main(args):
                 (_, prompt, negative_prompt, seed, init_image, mask_image, clip_prompt, guide_image, raw_prompt),
                 _,
             ) in enumerate(batch):
-                prompts.append(prompt) # + " best quality, 8K" if needed, add it
-                negative_prompts.append(negative_prompt) # + " poor quality, unclear hand, bad face " if needed, add it
-                # seeds.append(seed)
-                # seed = 364
+                prompts.append(prompt + " best quality, 8K") # recommend to add: " best quality, 8K"
+                negative_prompts.append(negative_prompt + " poor quality, unclear hand, bad face ") # recommend to add: " poor quality, unclear hand, bad face "
                 seeds.append(seed)
                 clip_prompts.append(clip_prompt)
                 raw_prompts.append(raw_prompt)
