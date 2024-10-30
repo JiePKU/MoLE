@@ -31,7 +31,8 @@ OMP_NUM_THREADS=1 $PYTHON -m torch.distributed.launch --nproc_per_node 4 \
     --diffusers_xformers \
     --use_lion_optimizer \
     --sample_prompts='./prompts_example/prompts.txt' \
-    # --global_step=212500 \
+    # --train_text_encoder \ ## to save memory and train unet only
+    # --global_step=212500 \ ## for resume training
 
 
 
