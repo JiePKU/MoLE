@@ -7,7 +7,7 @@
 
 <div align="center">
 
-[Project homepage](https://sites.google.com/view/mole4diffuser/) || [Paper](https://sites.google.com/view/mole4diffuser/) ||  [Model](https://huggingface.co/jiezhueval/MoLE-SDXL/tree/main) || [Human-centric Dataset](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) [code: asd4]
+[Project homepage](https://sites.google.com/view/mole4diffuser/) || [Paper](https://arxiv.org/abs/2410.23332) ||  [Model](https://huggingface.co/jiezhueval/MoLE-SDXL/tree/main) || [Human-centric Dataset](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) [code: asd4]
 
 </div>
 
