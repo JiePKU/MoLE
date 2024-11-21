@@ -33,7 +33,7 @@ This is an official implementation of MoLE, which is a human-centric text-to-ima
 Pleae see requirements.txt. We provide the xformers file used in our environment in [here](https://drive.google.com/drive/folders/1h390KY7VVXhXqXd1r1-np4E6vdEXxUUU?usp=sharing)
 
 ## Data Preparation
-Download the Human-centric Dataset from [Baidu Pan](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) (code: asd4).
+Download the Human-centric Dataset from [Baidu Pan](https://pan.baidu.com/s/1QL_IImARcBBLwleXEI1wsg) (code: asd4) or [Google Drive](https://drive.google.com/drive/folders/1jWOouxul6LZWHsU1NsH2RvZemzfgR3PN?usp=sharing).
 
 This dataset involves three subsets:human-in-the-scene images, close-up of face images, and close-up of hand images, totally one million images. Moreover these images possess superior quality and boasts high aesthetic scores.
 
